@@ -70,7 +70,7 @@ namespace TemplateEngine.Filters
             var input = (dynamic)arguments[0];
             var other = (dynamic)arguments[1];
 
-            return input - other;
+            return input / other;
         }
 
 
