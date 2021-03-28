@@ -1,0 +1,15 @@
+Title: "Test"
+Users:
+  - Name: admin
+    Email: admin@example.com
+  - Name: user
+    Email: user@example.com
+Rooms:
+  - Name: Support
+    Messages:
+      - Author: admin
+        SentAt: 2020-01-01T12:00:00
+        Text: Hello
+      - Author: user
+        SentAt: 2020-01-01T12:01:00
+        Text: Hi
