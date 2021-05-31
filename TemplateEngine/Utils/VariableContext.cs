@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Reflection;
 using System.Collections.Generic;
-using System.Text;
-using HandlebarsDotNet;
+using System.Reflection;
+
 
 namespace TemplateEngine.Utils
 {
-
-    class VariableContext : Dictionary<string, object>
+    public class VariableContext : Dictionary<string, object>
     {
-        public VariableContext(object source = null) : base()
+
+        public VariableContext(object source = null) : base(StringComparer.OrdinalIgnoreCase)
         {
             if (!(source is null))
             {
@@ -26,16 +25,20 @@ namespace TemplateEngine.Utils
             var dict = other as IDictionary<string, object>;
             if (dict != null)
             {
-                foreach (var (key, value) in dict)
+                foreach (var pair in dict)
                 {
-                    this[key] = value;
+                    this[pair.Key] = pair.Value;
                 }
             }
             else
             {
                 var type = other.GetType();
-                if (!type.IsPrimitive && !type.IsValueType && type != typeof(string))
+                if (!type.IsPrimitive && !type.IsValueType && type != typeof(string) && !type.IsSubclassOf(typeof(IEnumerable<>)))
                 {
+                    foreach (var fieldInfo in type.GetFields(BindingFlags.Instance | BindingFlags.Public))
+                    {
+                        this[fieldInfo.Name] = fieldInfo.GetValue(other);
+                    }
                     foreach (var propInfo in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
                     {
                         this[propInfo.Name] = propInfo.GetValue(other);
@@ -50,6 +53,4 @@ namespace TemplateEngine.Utils
 
 
     }
-
-
 }
